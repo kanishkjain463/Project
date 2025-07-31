@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Change Calculator</title>
+  <style>
+    :root {
+      --primary: #00bcd4;
+      --light: #e0f7fa;
+      --danger: #e53935;
+      --text: #333;
+      --radius: 10px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(to right, #e0f7fa, #ffffff);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    .container {
+      background: white;
+      width: 100%;
+      max-width: 500px;
+      padding: 30px;
+      border-radius: var(--radius);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+      transition: 0.3s ease-in-out;
+    }
+
+    header {
+      text-align: center;
+      color: var(--primary);
+      font-size: 1.8rem;
+      font-weight: bold;
+      margin-bottom: 15px;
+    }
+
+    .description {
+      text-align: center;
+      color: var(--text);
+      margin-bottom: 30px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 5px;
+      color: var(--text);
+      font-weight: bold;
+    }
+
+    input {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 20px;
+      border-radius: var(--radius);
+      border: 1px solid #ccc;
+      font-size: 1rem;
+    }
+
+    .check-btn {
+      width: 100%;
+      padding: 12px;
+      background-color: var(--primary);
+      color: white;
+      font-size: 1rem;
+      border: none;
+      border-radius: var(--radius);
+      cursor: pointer;
+      transition: background-color 0.3s ease-in-out;
+    }
+
+    .check-btn:hover {
+      background-color: #0097a7;
+    }
+
+    #error {
+      color: var(--danger);
+      font-weight: bold;
+      text-align: center;
+      margin-top: 10px;
+    }
+
+    table {
+      width: 100%;
+      margin-top: 30px;
+      border-collapse: collapse;
+      text-align: center;
+    }
+
+    caption {
+      font-weight: bold;
+      color: var(--primary);
+      margin-bottom: 10px;
+    }
+
+    th, td {
+      padding: 10px;
+      border: 1px solid #ccc;
+    }
+
+    th {
+      background: var(--light);
+    }
+
+    @media (max-width: 600px) {
+      .container {
+        padding: 20px;
+      }
+
+      header {
+        font-size: 1.5rem;
+      }
+
+      input,
+      .check-btn {
+        font-size: 0.95rem;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <header>Change Calculator</header>
+    <p class="description">
+      Calculate the minimum number of notes to return as change.
+    </p>
+
+    <label for="bill">Bill Amount</label>
+    <input type="number" id="bill" placeholder="Enter bill amount" />
+
+    <label for="cash">Cash Given</label>
+    <input type="number" id="cash" placeholder="Enter cash given" />
+
+    <button class="check-btn" id="btn">Calculate Change</button>
+    <p id="error"></p>
+
+    <table>
+      <caption>Return Change</caption>
+      <thead>
+        <tr>
+          <th>Denomination</th>
+          <th>Count</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>₹2000</td><td class="no-of-notes"></td></tr>
+        <tr><td>₹500</td><td class="no-of-notes"></td></tr>
+        <tr><td>₹100</td><td class="no-of-notes"></td></tr>
+        <tr><td>₹20</td><td class="no-of-notes"></td></tr>
+        <tr><td>₹10</td><td class="no-of-notes"></td></tr>
+        <tr><td>₹5</td><td class="no-of-notes"></td></tr>
+        <tr><td>₹1</td><td class="no-of-notes"></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <script>
+    const inputBill = document.getElementById("bill");
+    const cashGiven = document.getElementById("cash");
+    const checkBtn = document.getElementById("btn");
+    const errMsg = document.getElementById("error");
+    const noOfNotes = document.querySelectorAll(".no-of-notes");
+    const notes = [2000, 500, 100, 20, 10, 5, 1];
+
+    function displayError(message) {
+      errMsg.innerText = message;
+    }
+
+    function clearError() {
+      errMsg.innerText = "";
+    }
+
+    function clickHandler() {
+      clearError();
+      const billValue = Number(inputBill.value);
+      const cashValue = Number(cashGiven.value);
+
+      if (billValue <= 0 || cashValue <= 0) {
+        displayError("Please enter positive values.");
+        return;
+      }
+
+      if (cashValue < billValue) {
+        displayError("Insufficient cash. Please provide valid amount.");
+        return;
+      }
+
+      let remaining = cashValue - billValue;
+
+      noOfNotes.forEach((cell, i) => {
+        const count = Math.trunc(remaining / notes[i]);
+        remaining %= notes[i];
+        cell.innerText = count;
+      });
+    }
+
+    checkBtn.addEventListener("click", clickHandler);
+  </script>
+</body>
+
+</html>
